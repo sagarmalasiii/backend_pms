@@ -39,9 +39,9 @@ public class Task {
     private TaskStatus status;
 
     @Column(nullable = false)
-    private Double estimatedHours;
+    private Integer estimatedHours;
 
-    private Double actualHours;
+    private Integer actualHours;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -82,9 +82,13 @@ public class Task {
 
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = TaskStatus.TODO;
+        }
     }
+
 
 
     @PreUpdate

@@ -5,20 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProjectDto {
-    private UUID id;
-    private String name;
-    private String description;
-    private LocalDate plannedEndDate;
-    private LocalDate startDate;
-    private UUID managerId;
-
-
+public class UserPerformanceDto {
+    private UUID userId;
+    private Integer totalTaskCompleted;
+    private Double avgDelayRatio;
+    private LocalDateTime lastCalculatedAt;
 }

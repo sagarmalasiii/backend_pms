@@ -25,7 +25,7 @@ public class RiskAssessment {
     private Double predictedCompletionHours = 0D;
 
     @Column(nullable = false)
-    private Double estimatedHours;
+    private Integer estimatedHours;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

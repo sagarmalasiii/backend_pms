@@ -2,6 +2,7 @@ package com.sagarmalasi.project.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class JwtService {
                 .claim("role", user.getAuthorities().iterator().next().getAuthority())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(getSigningKey())   // algorithm inferred
+                .signWith(getSigningKey())
                 .compact();
     }
 
