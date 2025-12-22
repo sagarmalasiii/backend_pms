@@ -22,7 +22,7 @@ public class RiskAssessmentService {
 
         RiskAssessment assessment = RiskAssessment.builder()
                 .task(task)
-                .predictedCompletionHours(predictedHours)
+                .predictedCompletionHours((int) predictedHours)
                 .estimatedHours(task.getEstimatedHours())
                 .riskLevel(riskLevel)
                 .modelVersion("v1-simple")
