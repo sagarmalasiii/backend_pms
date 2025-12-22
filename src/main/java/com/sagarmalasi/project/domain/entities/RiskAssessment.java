@@ -22,7 +22,7 @@ public class RiskAssessment {
     private UUID id;
 
     @Column(nullable = false)
-    private Double predictedCompletionHours = 0D;
+    private Integer predictedCompletionHours = 0;
 
     @Column(nullable = false)
     private Integer estimatedHours;

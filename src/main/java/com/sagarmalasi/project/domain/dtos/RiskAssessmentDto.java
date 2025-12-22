@@ -22,3 +22,4 @@ public class RiskAssessmentDto {
     private String modelVersion;
     private LocalDateTime assessedAt;
 }
+

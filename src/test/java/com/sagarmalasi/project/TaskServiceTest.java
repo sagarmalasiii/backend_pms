@@ -36,7 +36,7 @@ class TaskServiceTest {
         Task task = taskRepository.save();
         User member = task.getTaskAssignments().get(0).getMember();
 
-        taskService.markTaskCompleted(task.getId());
+        taskService.markTaskCompleted(task.getId(), taskCompletionRequest);
 
         UserPerformance performance = performanceService.getByUser(member);
         assertEquals(1, performance.getTotalTaskCompleted());

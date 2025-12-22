@@ -1,6 +1,7 @@
 package com.sagarmalasi.project.services;
 
 import com.sagarmalasi.project.domain.entities.Task;
+import com.sagarmalasi.project.domain.entities.TaskAssignment;
 import com.sagarmalasi.project.domain.entities.User;
 import com.sagarmalasi.project.domain.entities.WorkloadSnapshot;
 import com.sagarmalasi.project.repositories.WorkloadSnapshotRepository;
@@ -26,5 +27,8 @@ public class WorkloadSnapShotService {
 
         workloadSnapshotRepository.save(snapshot);
     }
+
+
+
 
 }

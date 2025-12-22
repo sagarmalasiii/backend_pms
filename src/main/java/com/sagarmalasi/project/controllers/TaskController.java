@@ -1,10 +1,8 @@
 package com.sagarmalasi.project.controllers;
 
-import com.sagarmalasi.project.domain.dtos.TaskAssignmentRequest;
+import com.sagarmalasi.project.domain.dtos.TaskCompletionRequest;
 import com.sagarmalasi.project.domain.dtos.TaskCreationRequest;
 import com.sagarmalasi.project.domain.dtos.TaskDto;
-import com.sagarmalasi.project.domain.entities.Task;
-import com.sagarmalasi.project.services.TaskAssignmentService;
 import com.sagarmalasi.project.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +36,19 @@ public class TaskController {
         return ResponseEntity.noContent().build();
 
     }
+
+
+
+    @PostMapping("/{taskId}/done")
+    public ResponseEntity<TaskDto> markTaskAsDone(
+            @PathVariable UUID taskId,
+            @RequestBody @Valid TaskCompletionRequest request) {
+
+        return ResponseEntity.ok(
+                taskService.markTaskAsDone(taskId, request)
+        );
+    }
+
 
 
 

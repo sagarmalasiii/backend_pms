@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface UserPerformanceRepository extends JpaRepository<UserPerformance,UUID> {
 
-    Optional<UserPerformance> findByMember(User member)
+    Optional<UserPerformance> findByMember(User member);
 }
