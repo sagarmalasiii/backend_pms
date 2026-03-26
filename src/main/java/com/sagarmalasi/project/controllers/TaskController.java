@@ -1,5 +1,6 @@
 package com.sagarmalasi.project.controllers;
 
+import com.sagarmalasi.project.domain.dtos.StatusUpdateRequest;
 import com.sagarmalasi.project.domain.dtos.TaskCompletionRequest;
 import com.sagarmalasi.project.domain.dtos.TaskCreationRequest;
 import com.sagarmalasi.project.domain.dtos.TaskDto;
@@ -63,6 +64,13 @@ public class TaskController {
     ) {
         dependencyService.addDependency(taskId, dependsOnId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{taskId}/status")
+    public ResponseEntity<TaskDto> updateTaskStatus(
+            @PathVariable UUID taskId,
+            @RequestBody @Valid StatusUpdateRequest request) {
+        return ResponseEntity.ok(taskService.updateTaskStatus(taskId, request.getStatus()));
     }
 
 }

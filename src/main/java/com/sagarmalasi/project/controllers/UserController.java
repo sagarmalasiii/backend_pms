@@ -23,4 +23,11 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(authService.getAllUsers());
     }
+
+
+    @GetMapping("/members")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ResponseEntity<List<UserDto>> getAllMembers() {
+        return ResponseEntity.ok(authService.getAllMembers());
+    }
 }

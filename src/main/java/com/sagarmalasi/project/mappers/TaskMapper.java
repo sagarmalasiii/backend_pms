@@ -3,35 +3,34 @@ package com.sagarmalasi.project.mappers;
 import com.sagarmalasi.project.domain.dtos.TaskCreationRequest;
 import com.sagarmalasi.project.domain.dtos.TaskDto;
 import com.sagarmalasi.project.domain.entities.Task;
-import lombok.Builder;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import com.sagarmalasi.project.domain.entities.TaskAssignment;
+import org.mapstruct.*;
+import java.util.stream.Stream;
 
-@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.WARN)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface TaskMapper {
 
-
-        // Convert entity → DTO (for API responses)
         @Mapping(source = "project.id", target = "projectId")
         TaskDto toDto(Task task);
 
-        // Convert creation DTO → entity (for creating new tasks)
+        // After mapping, fill assignee details
+        @AfterMapping
+        default void afterMapping(Task task, @MappingTarget TaskDto dto) {
+                // Find the active assignment
+                task.getTaskAssignments().stream()
+                        .filter(TaskAssignment::getIsActive)
+                        .findFirst()
+                        .ifPresent(assignment -> {
+                                dto.setAssigneeId(assignment.getMember().getId());
+                                dto.setAssigneeUsername(assignment.getMember().getUsername());
+                        });
+        }
+
+        // ... existing toEntity method ...
         @Mapping(target = "id", ignore = true)
         @Mapping(target = "project", ignore = true)
         @Mapping(target = "createdAt", ignore = true)
         @Mapping(target = "updatedAt", ignore = true)
-
         @Mapping(target = "taskAssignments", ignore = true)
-
-
-        @Mapping(source = "plannedStartDate", target = "plannedStartDate")
-        @Mapping(source = "plannedEndDate", target = "plannedEndDate")
-
         Task toEntity(TaskCreationRequest request);
-
-
-
-
-
 }

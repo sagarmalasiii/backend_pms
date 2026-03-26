@@ -73,7 +73,7 @@ public class Task {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @OneToMany(mappedBy = "task", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<TaskAssignment> taskAssignments = new ArrayList<>();
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.PERSIST)

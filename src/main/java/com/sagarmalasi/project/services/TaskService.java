@@ -8,6 +8,7 @@ import com.sagarmalasi.project.mappers.TaskMapper;
 import com.sagarmalasi.project.repositories.*;
 import com.sagarmalasi.project.security.SecurityUtils;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.access.AccessDeniedException;
@@ -173,8 +174,47 @@ public class TaskService {
     }
 
 
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public TaskDto updateTaskStatus(UUID taskId, TaskStatus newStatus) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
 
+        boolean isManager = task.getProject().getManager().getId().equals(currentUserId);
+        boolean isAssigned = task.getTaskAssignments().stream()
+                .anyMatch(a -> a.getIsActive() && a.getMember().getId().equals(currentUserId));
 
+        if (!isManager && !isAssigned) {
+            throw new AccessDeniedException("Only manager or assigned member can update status");
+        }
 
+        // Optional: Validate status transition logic (e.g., cannot go back from DONE)
+        // But for simplicity, allow any status change.
+
+        task.setStatus(newStatus);
+        task.setUpdatedAt(LocalDateTime.now());
+
+        // If marking as DONE, set actual end date and check project completion
+        if (newStatus == TaskStatus.DONE) {
+            task.setActualEndDate(LocalDate.now());
+            // Check if all tasks in the project are done
+            boolean allDone = task.getProject().getTasks().stream()
+                    .allMatch(t -> t.getStatus() == TaskStatus.DONE);
+            if (allDone) {
+                Project project = task.getProject();
+                project.setStatus(ProjectStatus.COMPLETED);
+                project.setActualEndDate(LocalDate.now());
+                projectRepository.save(project);
+            }
+        } else {
+            // If moving from DONE to something else, clear actual end date
+            if (task.getActualEndDate() != null) {
+                task.setActualEndDate(null);
+            }
+        }
+
+        return taskMapper.toDto(taskRepository.save(task));
+    }
 }

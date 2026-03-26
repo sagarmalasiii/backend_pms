@@ -21,6 +21,7 @@ public class TaskDto {
     private String plannedStartDate;
     private String plannedEndDate;
 
-
-
+    // New fields
+    private UUID assigneeId;
+    private String assigneeUsername;
 }
