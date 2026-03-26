@@ -23,9 +23,9 @@ public class TaskAssignmentService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final TaskAssignmentRepository taskAssignmentRepository;
-    private final WorkloadSnapShotService workloadSnapshotService;
-    private final RiskAssessmentService riskAssessmentService;
 
+
+    //Assign user a task
     @Transactional
     public void assignUserToTask(UUID taskId, UUID userId) {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
@@ -61,10 +61,9 @@ public class TaskAssignmentService {
                 .build();
 
         taskAssignmentRepository.save(assignment);
-        workloadSnapshotService.captureSnapshot(member, task);
-        riskAssessmentService.assessTaskRisk(task);
-    }
 
+    }
+//Unassign user from task
     @Transactional
     public void unassignUserFromTask(UUID taskId, UUID userId) {
         UUID currentUserId = SecurityUtils.getCurrentUserId();
@@ -82,7 +81,7 @@ public class TaskAssignmentService {
 
         assignment.setIsActive(false);
         assignment.setUnassignedAt(LocalDateTime.now());
-        workloadSnapshotService.captureSnapshot(assignment.getMember(), task);
+
     }
 
 }

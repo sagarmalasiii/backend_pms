@@ -1,9 +1,6 @@
 package com.sagarmalasi.project.controllers;
 
-import com.sagarmalasi.project.domain.dtos.AuthResponse;
-import com.sagarmalasi.project.domain.dtos.LoginRequest;
-import com.sagarmalasi.project.domain.dtos.RegisterRequest;
-import com.sagarmalasi.project.domain.dtos.UserDto;
+import com.sagarmalasi.project.domain.dtos.*;
 import com.sagarmalasi.project.domain.entities.User;
 import com.sagarmalasi.project.mappers.UserMapper;
 import com.sagarmalasi.project.services.AuthService;
@@ -11,11 +8,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,15 +21,22 @@ public class AuthController {
 
     private final AuthService authService;
 
+
+    //registering user(by default every user is member)
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<SuccessResponse> register(@RequestBody RegisterRequest request) {
             return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 
+    //Login using email and passworrd
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
         return ResponseEntity.ok(authService.login(request));
     }
+
+
+
+
 
 
 

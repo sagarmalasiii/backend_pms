@@ -14,7 +14,6 @@ public class RegisterRequest {
 
     @NotBlank(message = "User is Required")
     @Size(min = 2,max = 50,message = "Category name must be between {min} and {max} characters")
-    @Pattern(regexp = "^[\\w\\s-]+$",message = "Category name can only contain letters,numbers,spaces and hyphens")
     String username;
 
     @NotBlank(message = "Email is Required")

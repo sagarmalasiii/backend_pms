@@ -18,7 +18,9 @@ public class TaskDto {
     private String description;
     private String priority;
     private String status;
-    private Double estimatedHours;
-    private Double actualHours;
+    private String plannedStartDate;
+    private String plannedEndDate;
+
+
 
 }

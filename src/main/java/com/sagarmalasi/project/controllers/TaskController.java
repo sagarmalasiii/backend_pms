@@ -3,11 +3,13 @@ package com.sagarmalasi.project.controllers;
 import com.sagarmalasi.project.domain.dtos.TaskCompletionRequest;
 import com.sagarmalasi.project.domain.dtos.TaskCreationRequest;
 import com.sagarmalasi.project.domain.dtos.TaskDto;
+import com.sagarmalasi.project.services.TaskDependencyService;
 import com.sagarmalasi.project.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,18 +20,21 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
+    private final TaskDependencyService dependencyService;
 
-
+//Get all the tasks within a specific project
     @GetMapping("/{projectId}")
     public ResponseEntity<List<TaskDto>> getAllProjectAssociatedTasks(@PathVariable UUID projectId){
         return ResponseEntity.ok(taskService.getAllProjectAssociatedTasks(projectId));
     }
 
     @PostMapping(path = "/create-task")
-    public ResponseEntity<TaskDto> createTask(@RequestBody TaskCreationRequest taskCreationRequest){
+    public ResponseEntity<TaskDto> createTask(@Valid@RequestBody TaskCreationRequest taskCreationRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(taskCreationRequest));
     }
 
+
+    //Delete task
     @DeleteMapping(path = "/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable UUID taskId){
         taskService.deleteTask(taskId);
@@ -38,7 +43,7 @@ public class TaskController {
     }
 
 
-
+//Completion of project(marking)
     @PostMapping("/{taskId}/done")
     public ResponseEntity<TaskDto> markTaskAsDone(
             @PathVariable UUID taskId,
@@ -50,9 +55,14 @@ public class TaskController {
     }
 
 
-
-
-
-
+//add dependency
+    @PostMapping("/{taskId}/dependencies/{dependsOnId}")
+    public ResponseEntity<Void> addDependency(
+            @PathVariable UUID taskId,
+            @PathVariable UUID dependsOnId
+    ) {
+        dependencyService.addDependency(taskId, dependsOnId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

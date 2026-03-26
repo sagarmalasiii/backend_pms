@@ -16,6 +16,7 @@ public class TaskAssignmentController {
 
     private final TaskAssignmentService taskAssignmentService;
 
+    //Assigne task to the member
     @PostMapping("/{taskId}/assign")
     public ResponseEntity<Void> assignUserToTask(
             @PathVariable UUID taskId,
@@ -26,6 +27,7 @@ public class TaskAssignmentController {
     }
 
 
+    //Unassign memeber from task
     @PostMapping("/{taskId}/unassign")
     public ResponseEntity<Void> unassignUserFromTask(
             @PathVariable UUID taskId,

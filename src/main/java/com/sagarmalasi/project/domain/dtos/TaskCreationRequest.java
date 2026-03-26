@@ -2,15 +2,13 @@ package com.sagarmalasi.project.domain.dtos;
 
 import com.sagarmalasi.project.domain.entities.Priority;
 import com.sagarmalasi.project.domain.entities.TaskStatus;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -30,8 +28,22 @@ public class TaskCreationRequest {
     @NotNull(message = "Please set Task Priority")
     private Priority priority;
 
-    @NotNull(message = "Specify the Estimated Hours to Complete !!!")
-    @Min(value = 1)
-    private Integer estimatedHours;
+
+
+    @NotNull(message = "You need start date")
+    @FutureOrPresent(message = "Start date cannot be in past")
+    private LocalDate plannedStartDate;
+
+    @NotNull(message = "You need end date")
+    @Future(message = "End date must be in future")
+    private LocalDate plannedEndDate;
+
+    @AssertTrue(message = "Planned end date must be after start date")
+    public boolean isValidDateRange() {
+        if (plannedStartDate == null || plannedEndDate == null) {
+            return true; // handled by @NotNull
+        }
+        return plannedEndDate.isAfter(plannedStartDate);
+    }
 
 }

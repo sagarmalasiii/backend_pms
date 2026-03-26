@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -14,15 +16,9 @@ import java.util.List;
 public class ApiErrorResponse {
     private int status;
     private String message;
-    private List<FieldError> errorList;
+    private Map<String, String> errors;
+    private LocalDateTime timestamp;
 
-    @Builder
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class FieldError{
-        private String field;
-        private String message;
-    }
+
 
 }

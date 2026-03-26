@@ -2,12 +2,12 @@ package com.sagarmalasi.project.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.query.SelectionQuery;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Entity
 @Getter
@@ -15,71 +15,73 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "tasks",
-        uniqueConstraints =
-        @UniqueConstraint(name = "UniqueProjectAndTask",columnNames = {"title","project_id"}))
+@Table(
+        name = "tasks",
+        uniqueConstraints = @UniqueConstraint(
+                name = "UniqueProjectAndTask",
+                columnNames = {"title", "project_id"}
+        )
+)
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Version
+    private Long version;
+
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Priority priority;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TaskStatus status;
 
+    // PLANNED SCHEDULE
     @Column(nullable = false)
-    private Integer estimatedHours;
+    private LocalDate plannedStartDate;
 
-    private Integer actualHours;
+    @Column(nullable = false)
+    private LocalDate plannedEndDate;
+
+    // ACTUAL TRACKING
+    private LocalDate actualStartDate;
+    private LocalDate actualEndDate;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    private LocalDateTime startedAt;
+    // SUCCESSOR DEPENDENCIES (Tasks depending on THIS task)
+    @OneToMany(mappedBy = "predecessorTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskDependency> successorDependencies = new ArrayList<>();
 
-    private LocalDateTime completedAt;
+    // PREDECESSOR DEPENDENCIES (Tasks this task depends on)
+    @OneToMany(mappedBy = "successorTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskDependency> predecessorDependencies = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @OneToMany(mappedBy = "task",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<TaskAssignment> taskAssignments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "task",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.PERSIST)
     private List<TaskHistory> taskHistories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "task",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    private List<RiskAssessment> riskAssessments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "task",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-    private List<WorkloadSnapshot> workloadSnapshots = new ArrayList<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return Objects.equals(id, task.id);
+    public long getPlannedDurationDays() {
+        return ChronoUnit.DAYS.between(plannedStartDate, plannedEndDate);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
 
     @PrePersist
     protected void onCreate() {
@@ -89,14 +91,23 @@ public class Task {
         }
     }
 
-
-
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+        Task task = (Task) o;
+        return id != null && id.equals(task.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 
 
 }

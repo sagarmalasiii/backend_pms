@@ -11,7 +11,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+//Spring security will use CustomUserDetails
 public class CustomUserDetails implements UserDetails {
+
 
     private final User user;
 

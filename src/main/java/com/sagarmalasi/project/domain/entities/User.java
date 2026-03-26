@@ -4,6 +4,7 @@ import com.sagarmalasi.project.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+
+
+
     @Column(nullable = false)
     private Boolean isActive;
 
@@ -45,11 +49,8 @@ public class User {
     @OneToMany(mappedBy = "member",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private List<TaskAssignment> assignments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member",cascade = CascadeType.PERSIST)
-    private UserPerformance performance;
 
-    @OneToMany(mappedBy = "member",cascade = CascadeType.PERSIST)
-    private List<WorkloadSnapshot> workloadSnapshots = new ArrayList<>();
+
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface ProjectMapper {
 
     @Mapping(source = "manager.id",target = "managerId")

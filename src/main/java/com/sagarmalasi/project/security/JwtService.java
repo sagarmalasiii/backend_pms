@@ -14,7 +14,7 @@ import java.util.Date;
 public class JwtService {
 
     private static final String SECRET =
-            "this_is_a_very_secure_256_bit_secret_key_change_in_prod";
+            "adlkfjalkdfjklakfdkladjfklajdklfakldfjklajdfklakldfklj445alkdlfkj";
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
@@ -24,6 +24,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(user.getUsername())
                 .claim("role", user.getAuthorities().iterator().next().getAuthority())
+                .claim("userId", ((CustomUserDetails) user).getId())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(getSigningKey())

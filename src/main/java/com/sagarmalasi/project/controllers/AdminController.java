@@ -2,8 +2,6 @@ package com.sagarmalasi.project.controllers;
 
 import com.sagarmalasi.project.domain.Role;
 import com.sagarmalasi.project.services.AdminService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,8 +15,10 @@ import java.util.UUID;
 public class AdminController {
     private final AdminService adminService;
 
+
+//Only Admin can update user roles(mainly member to the manager and back)
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/admin/users/{userId}/role")
+    @PutMapping("/users/{userId}/role")
     public ResponseEntity<Void> updateUserRole(
             @PathVariable UUID userId,
             @RequestParam Role role
@@ -26,6 +26,8 @@ public class AdminController {
         adminService.changeUserRole(userId, role);
         return ResponseEntity.noContent().build();
     }
+
+
 
 
 }
